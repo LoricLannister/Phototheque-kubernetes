@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('./layouts/_header', { cssFile: cssFile }) %>
+  <body>
+    <div class="form-container">
+      <h1>Mise à jour des métadonnées</h1>
+      <form action="/albums/editImg/<%= img._id %>" method="POST">
+        <div class="form-group">
+          <label for="title">Titre</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            value="<%= img.title %>"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <input
+            type="text"
+            id="description"
+            name="description"
+            value="<%= img.description %>"
+            required
+          />
+        </div>
+        <div class="centered">
+          <button type="submit" class="btn btn-green">Mettre à jour</button>
+        </div>
+      </form>
+      <div class="centered">
+        <a href="/albums" class="btn btn-yellow">Revenir aux albums</a>
+      </div>
+    </div>
+  </body>
+</html>

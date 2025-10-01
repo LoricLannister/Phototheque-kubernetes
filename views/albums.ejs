@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('./layouts/_header', {cssFile: cssFile}) %>
+  <body>
+    <div class="container">
+      <h1>Vos différents albums</h1>
+      <div class="top-bar">
+        <a href="/albums/new" class="btn btn-primary"
+          >Ajouter un nouvel album</a
+        >
+        <div class="search-box">
+          <label for="search">Trouver des albums:</label>
+          <form action="/albums/" method="GET">
+            <input
+              type="text"
+              name="search"
+              placeholder="Rechercher ..."
+              value="<%= searchQuery %>"
+            />
+            <button type="submit" class="btn btn-secondary">Rechercher</button>
+          </form>
+        </div>
+      </div>
+      <% if (albums.length > 0) { %>
+      <div class="albums-list">
+        <% albums.forEach(album => { %>
+        <div class="album-card">
+          <img
+            src="<%= album.lastImg.imagePath %>"
+            alt="<%= album.lastImg.title %>"
+            class="album-thumbnail"
+          />
+          <p><%= album.title %></p>
+          <p><%= album.lastImg.title %></p>
+          <% if (album.lastImg.title !== "Cet album est vide") { %>
+          <a href="/albums/<%= album._id %>/imgs" class="btn btn-primary"
+            >Voir l'album</a
+          >
+          <% } else { %>
+            <a href="/albums/newImgs/<%= album._id %>/<%= album.title %>" class="btn btn-green"
+              >Ajouter une image</a
+            >
+          <% } %>
+        </div>
+        <% }); %>
+      </div>
+      <% } else { %>
+      <p class="no-albums">Aucun album trouvé</p>
+      <% } %>
+    </div>
+  </body>
+</html>

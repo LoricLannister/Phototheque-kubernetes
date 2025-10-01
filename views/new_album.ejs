@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('./layouts/_header', {cssFile: cssFile}) %>
+  <body>
+    <div class="form-container">
+      <h1>Créer un nouvel album</h1>
+      <form action="/albums/new" method="POST">
+        <div class="form-group">
+          <label for="title">Titre de l'album:</label>
+          <input type="text" id="title" name="title" required />
+        </div>
+        <div class="centered">
+          <button type="submit" class="btn btn-green">Créer l'album</button>
+        </div>
+      </form>
+      <div class="centered">
+        <a href="/albums" class="btn btn-yellow">Retour aux albums</a>
+      </div>
+    </div>
+  </body>
+</html>

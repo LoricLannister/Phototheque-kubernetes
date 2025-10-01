@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('layouts/_header', { cssFile: cssFile }) %>
+  <body>
+    <h1>Images de l'album <%= album.title %></h1>
+    <div class="centered">
+      <a href="/albums" class="btn btn-yellow">Revenir aux albums</a>
+    </div>
+    <div class="container">
+      <% if (album.imgs.length > 0) { %>
+          <% album.imgs.forEach(img => { %>
+          <div class="card">
+              <img src="<%= img.imagePath %>" alt="<%= img.title %>" />
+              <p><%= img.title %> - <%= img.date.toDateString() %></p>
+              <a href="/albums/editImg/<%= img._id %>" class="btn btn-blue">Mettre à jour</a>
+              <form
+                  action="/albums/deleteImg/<%= img._id %>"
+                  method="POST"
+                  style="display: inline"
+              >
+                  <button
+                      type="submit"
+                      onclick="return confirm('Voulez-vous vraiment supprimer cette image ?');"
+                  >
+                      Supprimer
+                  </button>
+              </form>
+          </div>
+          <% }); %>
+      <% } else { %>
+          <p class="no-images">Aucune image disponible</p>
+      <% } %>
+  </div>
+    <div class="centered">
+      <a href="/albums/newImgs/<%= album._id %>/<%= album.title %>" class="btn btn-green"
+        >Ajouter une image</a
+      >
+      <form
+            action="/albums/delete/<%= album._id %>"
+            method="POST"
+            style="display: inline"
+          >
+            <button
+              type="submit"
+              class="btn btn-red"
+              onclick="return confirm('Voulez-vous vraiment supprimer cet album ?');"
+            >
+              Supprimer l'album
+            </button>
+          </form>
+    </div>
+  </body>
+</html>

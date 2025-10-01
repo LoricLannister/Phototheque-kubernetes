@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('./layouts/_header', {cssFile: cssFile}) %>
+
+  <body>
+    <div class="form-container">
+      <h1>Ajouter une image à l'album <%= albumTitle %></h1>
+      <form
+        action="/albums/imgs/<%= albumId %>"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <div class="form-group">
+          <label for="title">Titre de la photo:</label>
+          <input type="text" id="title" name="title" required />
+        </div>
+        <div class="form-group">
+          <label for="description">Description:</label>
+          <textarea id="description" name="description" ows="4"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="image">Image:</label>
+          <input type="file" id="image" name="image" required />
+        </div>
+        <div class="centered">
+          <button type="submit" class="btn btn-green">Ajouter la photo</button>
+        </div>
+      </form>
+      <div class="centered">
+        <a href="/albums" class="btn btn-yellow">Revenir aux albums</a>
+      </div>
+    </div>
+  </body>
+</html>

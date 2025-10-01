@@ -1,0 +1,111 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+a {
+    display: block;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.centered {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.btn-yellow {
+    background-color: #ebc30d;
+    color: #333;
+    border: 1px solid #ebc30d;
+}
+
+.btn-yellow:hover {
+    background-color: #fbc02d;
+    border-color: #fbc02d;
+}
+
+.btn-green {
+    background-color: #12d308;
+    color: #333;
+    border: 1px solid #12d308;
+}
+
+.btn-green:hover {
+    background-color: #08a41d;
+    border-color: #08a41d;
+}
+
+.btn-blue {
+    background-color: #306fc3;
+    color: white;
+    border: 1px solid #306fc3;
+}
+
+.btn-blue:hover {
+    background-color: #0849a4;
+    border-color: #0849a4;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    width: 200px; /* Taille précise de chaque carte */
+}
+
+.card img {
+    width: 100%; /* Taille précise de l'image */
+    height: 150px; /* Taille précise de l'image */
+    object-fit: cover; /* Pour s'assurer que l'image couvre bien l'espace */
+}
+
+.no-images {
+    font-size: 18px;
+    color: #777;
+    text-align: center;
+    margin-top: 20px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #f5120a;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #c9302c;
+}
+
+form {
+    display: inline;
+}
