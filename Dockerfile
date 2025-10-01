@@ -23,7 +23,7 @@ CMD ["npm", "start"]
 # kubectl port-forward pod/phototheque-web-pod 3003:3003
 # On crée ensuite un déploiement pour scaler et mettre à jour facilement
 # kubectl apply -f deployment.yaml
-# On crée enfin un service pour exposer notre pod à l'extérieur via <NodeIp>:<NodePort>
+# On crée enfin un service pour exposer notre pod à l'extérieur via <NodeIp>:<NodePort> et on n'y accède via localhost:<NodePort>
 # kubectl apply -f service.yaml
 # kubectl get services
 # NB: le port 3003 utilisé dans l'application Js doit être le même dans le fichier service.yaml
@@ -43,3 +43,7 @@ CMD ["npm", "start"]
 # docker run -d --name node-app --network photonet phototheque-web
 # On lance le conteneur nginx directement et on n'y injecte notre fichier de configuration
 # docker run -d --name nginx-proxy --network photonet -p 80:80 -v ${pwd}/nginx.conf:/etc/nginx/nginx.conf:ro nginx:alpine
+
+
+# Supprimer les ressources allouées au namespace default
+# kubectl delete all --all -n default

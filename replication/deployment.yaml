@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phototheque-web-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: phototheque-web
+  template:
+    metadata:
+      labels:
+        app: phototheque-web
+    spec:
+      containers:
+        - name: phototheque-web
+          image: phototheque-web:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
