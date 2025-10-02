@@ -1,0 +1,26 @@
+services:
+  node-app:
+    build: .
+    container_name: phototheque_app
+    networks:
+      - photonet
+    environment:
+      - MONGO_URI=mongodb://host.docker.internal:27017/phototheque
+    ports:
+      - "3003:3003"   # pour tester en direct si besoin
+
+  nginx:
+    image: nginx:alpine
+    container_name: phototheque_nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "8080:80"
+    depends_on:
+      - node-app
+    networks:
+      - photonet
+
+networks:
+  photonet:
+    driver: bridge
