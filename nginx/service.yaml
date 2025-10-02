@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: phototheque-nginx-service
+spec:
+  type: NodePort
+  selector:
+    app: phototheque-nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30080   # facultatif, pour accès externe via NodePort

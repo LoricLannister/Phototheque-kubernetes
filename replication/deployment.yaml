@@ -18,3 +18,12 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
+
+# On build l'image
+# docker build -t phototheque-web:1.0 .
+# On crée ensuite un déploiement de nos 3 replicas de pods
+# kubectl apply -f replication/deployment.yaml
+# On crée enfin un service pour exposer nos pods à l'extérieur via <NodeIp>:<NodePort> et on n'y accède via localhost:<NodePort>
+# kubectl apply -f replication/service.yaml
+# kubectl get services
+# NB: le port 3003 utilisé dans l'application Js doit être le même dans le fichier service.yaml

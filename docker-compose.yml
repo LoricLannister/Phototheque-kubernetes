@@ -17,7 +17,7 @@ services:
     ports:
       - "8080:80"
     depends_on:
-      - node-app
+      - phototheque-web-service
     networks:
       - photonet
 
