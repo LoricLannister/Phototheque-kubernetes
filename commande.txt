@@ -1,12 +1,12 @@
 
 
-Creer l'image:
-
+-------------------------------1-----------------------Creer l'image  --------------------
 
 # On build l'image
 # docker build -t phototheque-web:1.0 .
 # On crée un pod pour notre app
 # kubectl apply -f pods.yaml
+
 # On teste le pod via port forwarding
 # kubectl port-forward pod/phototheque-web-pod 3003:3003
 # On crée ensuite un déploiement pour scaler et mettre à jour facilement
@@ -36,7 +36,60 @@ Creer l'image:
 # Supprimer les ressources allouées au namespace default
 # kubectl delete all --all -n default
 
-Commentaire :
+--------------------------------------Commentaire -------------------------------------
 
 rajouter ceci : RUN npm install -g nodemon
+
+
+
+
+-------------------------------2-----------------------Creer replica  --------------------
+
+
+# On build l'image
+# docker build -t phototheque-web:1.0 .
+# On crée ensuite un déploiement de nos 3 replicas de pods
+# kubectl apply -f replication/deployment.yaml
+# On crée enfin un service pour exposer nos pods à l'extérieur via <NodeIp>:<NodePort> et on n'y accède via localhost:<NodePort>
+# kubectl apply -f replication/service.yaml
+# kubectl get services
+# NB: le port 3003 utilisé dans l'application Js doit être le même dans le fichier service.yaml
+
+-----------------------------------------------------------------------------
+
+---------------------------3 ----------------------ngnix ----------------------
+
+
+# Commande qui va créer un ConfigMap phototheque-nginx-config que le Deployment va utiliser.
+# kubectl create configmap phototheque-nginx-config --from-file=nginx.conf=nginx/nginx.conf
+# Les applys
+# kubectl apply -f nginx/deployment.yaml
+# kubectl apply -f nginx/service.yaml
+
+# Vérifier que la config a été correctement crée
+# kubectl get configmaps
+# kubectl describe configmap phototheque-nginx-config
+
+# On teste avec http://localhost:30080
+
+
+
+
+---------------------------4------------------ Varnish--------------------
+
+# On apply les fichiers yaml du dossier varnish
+# kubectl apply -f varnish/configmap.yaml
+# kubectl apply -f varnish/deployment.yaml
+# kubectl apply -f varnish/service.yaml
+
+
+
+
+
+
+
+
+
+
+
 
