@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: phototheque-varnish-service
+spec:
+  selector:
+    app: phototheque-varnish
+  ports:
+    - port: 80
+      targetPort: 80
+  type: LoadBalancer
+
+
+# L'architecture devient: User → Varnish (ClusterIP / NodePort) → Nginx → Node.js → MongoDB

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phototheque-varnish
+  labels:
+    app: phototheque-varnish
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: phototheque-varnish
+  template:
+    metadata:
+      labels:
+        app: phototheque-varnish
+    spec:
+      containers:
+        - name: varnish
+          image: varnish:7.3   # version stable
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: varnish-config
+              mountPath: /etc/varnish
+      volumes:
+        - name: varnish-config
+          configMap:
+            name: phototheque-varnish-config
+
+
+# On apply les fichiers yaml du dossier varnish
+# kubectl apply -f varnish/configmap.yaml
+# kubectl apply -f varnish/deployment.yaml
+# kubectl apply -f varnish/service.yaml

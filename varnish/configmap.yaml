@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: phototheque-varnish-config
+data:
+  default.vcl: |
+    vcl 4.1;
+
+    backend default {
+        .host = "phototheque-nginx-service";
+        .port = "80";
+    }
+
+    sub vcl_recv {
+        if (req.method == "PURGE") {
+            if (client.ip != "127.0.0.1") {
+                return (synth(405, "Not allowed."));
+            }
+        }
+    }
