@@ -1,20 +1,7 @@
-FROM node:latest
 
-# Créer le répertoire de travail de l'application dans le conteneur
-WORKDIR /usr/src/app
-# Copier le package.json et installer les dépendances
-RUN npm install -g nodemon
-COPY package.json .
-RUN npm install
-# Copier tous les fichiers de l'application dans le conteneur
-COPY . .
-# Définir la variable d'environnement MongoDB
-ENV MONGO_URI="mongodb://host.docker.internal:27017/phototheque"
-# Exposer le port sur lequel l'application s'exécute
-EXPOSE 3003
 
-# Commande par défaut pour démarrer l'application
-CMD ["npm", "start"]
+Creer l'image:
+
 
 # On build l'image
 # docker build -t phototheque-web:1.0 .
@@ -48,3 +35,8 @@ CMD ["npm", "start"]
 
 # Supprimer les ressources allouées au namespace default
 # kubectl delete all --all -n default
+
+Commentaire :
+
+rajouter ceci : RUN npm install -g nodemon
+
