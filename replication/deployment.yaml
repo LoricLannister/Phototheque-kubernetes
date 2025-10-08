@@ -18,6 +18,16 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
+          env:
+            - name: MONGO_URI
+              value: "mongodb://mongos-service:27017/phototheque"
+          volumeMounts:
+            - name: uploads-volume
+              mountPath: /usr/src/app/public/uploads
+      volumes:
+        - name: uploads-volume
+          persistentVolumeClaim:
+            claimName: uploads-pvc
 
 # On build l'image
 # docker build -t phototheque-web:1.0 .

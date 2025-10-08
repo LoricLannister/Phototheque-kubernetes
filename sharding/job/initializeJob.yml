@@ -1,0 +1,65 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongodb-shard-init
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: mongo-init
+        image: mongo:6.0
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            echo "Waiting for Mongo pods to be ready..."
+            sleep 30
+
+            echo "=== Initializing Config Server ==="
+            mongosh --host configsvr-0.configsvr.default.svc.cluster.local --port 26050 --eval '
+              if (!rs.status().ok) {
+                rs.initiate({
+                  _id: "configReplSet",
+                  configsvr: true,
+                  members: [{ _id: 0, host: "configsvr-0.configsvr.default.svc.cluster.local:26050" }]
+                })
+              } else {
+                print("ConfigReplSet already initialized")
+              }'
+
+            echo "=== Initializing Shards ==="
+            mongosh --host shard1-0.shard1.default.svc.cluster.local --port 27018 --eval '
+              try {
+                rs.initiate({
+                  _id: "shard1ReplSet",
+                  members: [{ _id: 0, host: "shard1-0.shard1.default.svc.cluster.local:27018" }]
+                })
+              } catch(e) { print(e) }'
+
+            mongosh --host shard2-0.shard2.default.svc.cluster.local --port 27019 --eval '
+              try {
+                rs.initiate({
+                  _id: "shard2ReplSet",
+                  members: [{ _id: 0, host: "shard2-0.shard2.default.svc.cluster.local:27019" }]
+                })
+              } catch(e) { print(e) }'
+
+            mongosh --host shard3-0.shard3.default.svc.cluster.local --port 27020 --eval '
+              try {
+                rs.initiate({
+                  _id: "shard3ReplSet",
+                  members: [{ _id: 0, host: "shard3-0.shard3.default.svc.cluster.local:27020" }]
+                })
+              } catch(e) { print(e) }'
+
+            echo "=== Adding Shards to Mongos ==="
+            mongosh --host mongos-service.default.svc.cluster.local --port 27017 --eval '
+              try {
+                sh.addShard("shard1ReplSet/shard1-0.shard1.default.svc.cluster.local:27018");
+                sh.addShard("shard2ReplSet/shard2-0.shard2.default.svc.cluster.local:27019");
+                sh.addShard("shard3ReplSet/shard3-0.shard3.default.svc.cluster.local:27020");
+                sh.enableSharding("phototheque");
+                sh.shardCollection("phototheque.images", { _id: "hashed" });
+              } catch(e) { print(e) }'
+
+            echo "✅ MongoDB Sharding initialization completed."

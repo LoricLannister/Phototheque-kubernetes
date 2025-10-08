@@ -8,7 +8,8 @@ RUN npm install
 # Copier tous les fichiers de l'application dans le conteneur
 COPY . .
 # Définir la variable d'environnement MongoDB
-ENV MONGO_URI="mongodb://host.docker.internal:27017/phototheque"
+ENV MONGO_URI="mongodb://mongos-service:27017/phototheque"
+# Ancienne Url de connexion avec mongoDb en local "mongodb://host.docker.internal:27017/phototheque"
 # Exposer le port sur lequel l'application s'exécute
 EXPOSE 3003
 

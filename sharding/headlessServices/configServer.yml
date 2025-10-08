@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: configsvr
+spec:
+  clusterIP: None   # Headless service
+  selector:
+    app: configsvr
+  ports:
+    - port: 26050
