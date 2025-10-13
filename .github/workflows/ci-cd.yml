@@ -16,6 +16,10 @@ jobs:
     name: 🧪 Run Node.js tests
     runs-on: ubuntu-latest
 
+    env:
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+      MONGO_TEST_URI: ${{ secrets.MONGO_TEST_URI }}
+
     steps:
       - name: 🧰 Checkout code
         uses: actions/checkout@v4

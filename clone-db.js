@@ -4,8 +4,8 @@
  */
 const mongoose = require('mongoose');
 
-const PROD_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/phototheque';
-const TEST_URI = process.env.MONGO_TEST_URI || 'mongodb://localhost:27017/phototheque_test';
+const PROD_URI = secrets.MONGO_URI || 'mongodb://localhost:27017/phototheque';
+const TEST_URI = secrets.MONGO_TEST_URI || 'mongodb://localhost:27017/phototheque_test';
 
 // Liste des collections à copier (à adapter selon ton modèle)
 const collectionsToClone = ['albums', 'users', 'images']; 
