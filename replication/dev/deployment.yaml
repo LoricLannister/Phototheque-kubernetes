@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: phototheque-web-deployment
+  #namespace: test
 spec:
   replicas: 3
   selector:
@@ -15,7 +16,7 @@ spec:
       containers:
         - name: phototheque-web
           image: phototheque-web:1.0
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent #Always
           ports:
             - containerPort: 8080
           env:
@@ -37,3 +38,8 @@ spec:
 # kubectl apply -f replication/service.yaml
 # kubectl get services
 # NB: le port 3003 utilisé dans l'application Js doit être le même dans le fichier service.yaml
+# Créer le namespace test
+# kubectl create namespace test
+# Lundi, 13/10/2025
+# Forcer kubernetes à utiliser la dernière image sur docker hub
+# kubectl set image deployment/phototheque-web-deployment phototheque-web=loriclannister/phototheque-web:latest

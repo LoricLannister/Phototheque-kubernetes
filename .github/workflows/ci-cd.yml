@@ -75,6 +75,7 @@ jobs:
       - name: 📤 Push Docker image
         run: |
           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
       - name: 🔐 Set up kubeconfig
         uses: azure/setup-kubectl@v4
