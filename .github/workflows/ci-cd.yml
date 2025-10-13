@@ -8,7 +8,7 @@ on:
 env:
   REGISTRY: docker.io
   IMAGE_NAME: loriclannister/phototheque-web
-  KUBE_NAMESPACE: test                  # namespace Kubernetes de test
+  #KUBE_NAMESPACE: test                  # namespace Kubernetes de test
   DEPLOYMENT_NAME: phototheque-web-deployment
 
 jobs:
@@ -86,7 +86,21 @@ jobs:
       - name: ⚙️ Configure kubectl access
         run: |
           echo "${{ secrets.KUBECONFIG_CONTENT }}" > kubeconfig
-          export KUBECONFIG=./kubeconfig          
+          export KUBECONFIG=./kubeconfig
+      - name: 🚀 Update image & restart deployment
+        env:
+          KUBECONFIG: ./kubeconfig
+        run: |
+          echo "🔄 Mise à jour de l'image dans le déploiement..."
+          kubectl set image deployment/${{ env.DEPLOYMENT_NAME }} \
+            phototheque-web=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
+            -n default --record
+
+          echo "♻️ Redémarrage du déploiement pour forcer le pull de l'image..."
+          kubectl rollout restart deployment/${{ env.DEPLOYMENT_NAME }} -n default
+
+          echo "⏳ Attente de la mise à jour complète..."
+          kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }} -n default         
 
 # Ce fichier secret permet à GitHub d’accéder à ton cluster K8s de test local
 # KUBECONFIG_CONTENT
