@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: loriclannister/phototheque-kubernetes
+  IMAGE_NAME: loriclannister/phototheque-web
   KUBE_NAMESPACE: test                  # namespace Kubernetes de test
   DEPLOYMENT_NAME: phototheque-web-deployment
 
