@@ -83,12 +83,10 @@ jobs:
         with:
           version: 'latest'
 
-      - name: ⚙️ Configure kubectl access and update deployed image
+      - name: ⚙️ Configure kubectl access
         run: |
           echo "${{ secrets.KUBECONFIG_CONTENT }}" > kubeconfig
-          export KUBECONFIG=./kubeconfig
-          kubectl set image deployment/phototheque-web-deployment phototheque-web=${{ env.IMAGE_NAME }}:latest
-          kubectl rollout status deployment/phototheque-web-deployment          
+          export KUBECONFIG=./kubeconfig          
 
 # Ce fichier secret permet à GitHub d’accéder à ton cluster K8s de test local
 # KUBECONFIG_CONTENT
