@@ -44,6 +44,9 @@ jobs:
       - name: 🧠 Clone test database (optional)
         run: npm run clone:testdb
 
+      - name: 🧹 Fix permissions
+        run: chmod +x ./node_modules/.bin/jest
+
       - name: 🧪 Run tests
         env:
           MONGO_TEST_URI: ${{ secrets.MONGO_TEST_URI }}
