@@ -8,3 +8,16 @@ spec:
     app: configsvr
   ports:
     - port: 26050
+
+
+# Ordre très important des apply
+
+# kubectl apply -f configsvr.yaml
+# kubectl apply -f shard1.yaml
+# kubectl apply -f shard2.yaml
+# kubectl apply -f shard3.yaml
+# kubectl apply -f mongos.yaml
+# kubectl apply -f initializeJob.yaml
+
+# kubectl get pods
+# kubectl logs job/mongodb-shard-init

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --runInBand",
+    "clone:testdb": "node clone-db.js",
     "start": "nodemon index.js"
   },
   "keywords": [],
@@ -21,7 +22,8 @@
     "assert": "^2.1.0",
     "ejs": "^3.1.10",
     "jest": "^29.7.0",
-    "supertest": "^7.0.0"
+    "mongodb-memory-server": "^10.2.3",
+    "supertest": "^7.1.4"
   },
   "jest": {
     "testEnvironment": "node",

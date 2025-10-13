@@ -1,38 +1,85 @@
-name: CI/CD with Docker
+name: CI/CD - Phototheque Web
 
 on:
   push:
     branches:
-      - master  # Déclenche le workflow lorsque des commits sont poussés sur la branche main
-  pull_request:
-    branches:
-      - master  # Déclenche le workflow lorsque des pull requests sont ouvertes vers la branche main
+      - loric  # Déclenche le workflow lorsque des commits sont poussés sur la branche loric
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: ${{ github.repository }}  # ex: loriclannister/phototheque-web
+  KUBE_NAMESPACE: test                  # namespace Kubernetes de test
+  DEPLOYMENT_NAME: phototheque-web-deployment
+
 jobs:
-  build:
+  test:
+    name: 🧪 Run Node.js tests
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout du code
-      uses: actions/checkout@v3
+      - name: 🧰 Checkout code
+        uses: actions/checkout@v4
 
-    - name: Installer les dépendances
-      run: npm install
-    
-    - name: Vérifier les permissions des fichiers Jest
-      run: chmod +x ./node_modules/.bin/jest
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-    - name: Lancer les tests
-      run: npm test
-      continue-on-error: false
+      - name: 📦 Install dependencies
+        run: npm install
 
-    - name: Connexion à Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: 🧠 Clone test database (optional)
+        run: npm run clone:testdb
 
-    - name: Construire l'image Docker
-      if: success()  # Condition : construire l'image seulement si les tests réussissent
-      run: docker build -t loriclannister/photoapp:latest .
+      - name: 🧪 Run tests
+        env:
+          MONGO_TEST_URI: ${{ secrets.MONGO_TEST_URI }}
+        run: npm test
 
-    - name: Pousser l'image Docker vers Docker Hub
-      run: docker push loriclannister/photoapp:latest
+  build-and-deploy:
+    name: 🚀 Build & Deploy
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧰 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: 🏗️ Build Docker image
+        run: |
+          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+
+      - name: 📤 Push Docker image
+        run: |
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: 🔐 Set up kubeconfig
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'latest'
+
+      - name: ⚙️ Configure kubectl access
+        run: |
+          echo "${{ secrets.KUBECONFIG_CONTENT }}" > kubeconfig
+          export KUBECONFIG=./kubeconfig
+
+      - name: 🚀 Deploy to test namespace
+        run: |
+          kubectl set image deployment/${{ env.DEPLOYMENT_NAME }} \
+            phototheque-web=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
+            -n ${{ env.KUBE_NAMESPACE }}
+          kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }} -n ${{ env.KUBE_NAMESPACE }}
+
+# Ce fichier secret permet à GitHub d’accéder à ton cluster K8s de test local
+# KUBECONFIG_CONTENT
+# kubectl config view --flatten --minify
+# Pour éviter de déclencher le pipeline à chaque micro commit pendant tes tests:
+# git commit -m "test ci [skip ci]"
+# GitHub ignore automatiquement le workflow si [skip ci] est dans le message.

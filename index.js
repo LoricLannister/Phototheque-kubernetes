@@ -9,7 +9,7 @@ const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/phototheque
 console.log("🔗 MONGO_URI utilisé :", process.env.MONGO_URI);
 mongoose
   .connect(mongoUri)
-  .then(() => console.log("✅ Connexion avec la base de données MongoDb locale réussie !!!!!!!!!!!!!!!"))
+  .then(() => console.log("✅ Connexion avec la base de données MongoDb réussie !!!!!!!!!!!!!!!"))
   .catch(err => console.error("❌ Erreur de connexion MongoDB :", err));
 // Configuration de EJS
 app.set("view engine", "ejs");

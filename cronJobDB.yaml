@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: refresh-phototheque-testdb
+spec:
+  schedule: "0 3 * * *" # Tous les jours à 3h du matin
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: clone-db
+            image: phototheque-web:1.0
+            command: ["npm", "run", "clone:testdb"]
+            env:
+              - name: MONGO_PROD_URI
+                value: "mongodb://mongos-service:27017/phototheque"
+              - name: MONGO_TEST_URI
+                value: "mongodb://mongos-service:27017/phototheque_test"

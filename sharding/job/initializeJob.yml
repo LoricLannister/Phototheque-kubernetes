@@ -5,7 +5,7 @@ metadata:
 spec:
   template:
     spec:
-      restartPolicy: OnFailure
+      restartPolicy: Never
       containers:
       - name: mongo-init
         image: mongo:6.0
@@ -13,18 +13,18 @@ spec:
         args:
           - |
             echo "Waiting for Mongo pods to be ready..."
-            sleep 30
+            sleep 60
 
             echo "=== Initializing Config Server ==="
             mongosh --host configsvr-0.configsvr.default.svc.cluster.local --port 26050 --eval '
-              if (!rs.status().ok) {
+              try {
                 rs.initiate({
                   _id: "configReplSet",
                   configsvr: true,
                   members: [{ _id: 0, host: "configsvr-0.configsvr.default.svc.cluster.local:26050" }]
-                })
-              } else {
-                print("ConfigReplSet already initialized")
+                });
+              } catch(e) {
+                print("ConfigReplSet probably already initialized: " + e);
               }'
 
             echo "=== Initializing Shards ==="
@@ -52,6 +52,8 @@ spec:
                 })
               } catch(e) { print(e) }'
 
+            echo "Waiting for mongos-service to be ready..."
+            sleep 60
             echo "=== Adding Shards to Mongos ==="
             mongosh --host mongos-service.default.svc.cluster.local --port 27017 --eval '
               try {
@@ -63,3 +65,6 @@ spec:
               } catch(e) { print(e) }'
 
             echo "✅ MongoDB Sharding initialization completed."
+
+# Commande pour voir les logs du job
+# kubectl logs job/mongodb-shard-init
