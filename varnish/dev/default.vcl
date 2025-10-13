@@ -7,6 +7,14 @@ backend default {
 
 sub vcl_recv {
     # On peut définir des règles de cache ici
+
+    if (req.method == "PURGE") {
+        if (client.ip != "127.0.0.1" && client.ip != "10.0.0.0"/8) {
+            return (synth(405, "Not allowed."));
+        }
+        return (purge);
+    }
+
     if (req.url ~ "^/api/") {
         return (pass); # ne pas mettre en cache l’API
     }
