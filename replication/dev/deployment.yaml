@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: phototheque-web
-          image: phototheque-web:1.0
-          imagePullPolicy: IfNotPresent #Always
+          image: loriclannister/phototheque-web:latest #phototheque-web:1.0
+          imagePullPolicy: Always #IfNotPresent #Always
           ports:
             - containerPort: 8080
           env:
