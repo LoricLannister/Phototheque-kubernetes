@@ -43,5 +43,6 @@ spec:
 # Lundi, 13/10/2025
 # Forcer kubernetes à utiliser la dernière image sur docker hub
 # kubectl set image deployment/phototheque-web-deployment phototheque-web=loriclannister/phototheque-web:latest
+# kubectl rollout restart deployment phototheque-web-deployment
 # Suivre la mise à jour sur les différents pods
 # kubectl rollout status deployment/phototheque-web-deployment
