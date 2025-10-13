@@ -20,6 +20,15 @@ beforeAll(async () => {
       process.exit(1);
     });
 
+  // Nettoie la collection albums avant les tests
+  await Album.deleteMany({});
+
+  // Ajoute un album de test
+  await Album.create({
+    title: 'Album de test automatique',
+    imgs: [] // champ requis mais vide pour l’instant
+  });
+
   // Création d'une instance express
   app = express();
   app.set("view engine", "ejs");
