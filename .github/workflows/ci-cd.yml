@@ -87,6 +87,10 @@ jobs:
         run: |
           echo "${{ secrets.KUBECONFIG_CONTENT }}" > kubeconfig
           export KUBECONFIG=./kubeconfig
+      - name: Update deployment
+        run: |
+          kubectl set image deployment/phototheque-web-deployment phototheque-web=${{ env.IMAGE_NAME }}:latest
+          kubectl rollout status deployment/phototheque-web-deployment
 
 # Ce fichier secret permet à GitHub d’accéder à ton cluster K8s de test local
 # KUBECONFIG_CONTENT
