@@ -8,4 +8,4 @@ spec:
   ports:
     - port: 3003
       targetPort: 3003
-  type: ClusterIP # En lieu et place de NodePort car ClusterIP le rend accessible uniquement à l’intérieur du cluster, pas depuis ton navigateur ou ton poste local.
+  type: NodePort # En lieu et place de NodePort car ClusterIP le rend accessible uniquement à l’intérieur du cluster, pas depuis ton navigateur ou ton poste local.
