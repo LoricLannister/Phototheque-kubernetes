@@ -12,6 +12,8 @@ const collectionsToClone = ['albums', 'users', 'images'];
 
 async function cloneDatabase() {
   console.log('🔄 Starting database cloning...');
+  console.log('production uri:' + PROD_URI);
+  console.log('test uri:' + TEST_URI);
   const prodConn = await mongoose.createConnection(PROD_URI).asPromise();
   const testConn = await mongoose.createConnection(TEST_URI).asPromise();
 
