@@ -4,7 +4,7 @@ metadata:
   name: phototheque-auto-refresh
   namespace: default
 spec:
-  schedule: "*/3 * * * *" # Exécution toutes les 3 minutes
+  schedule: "*/2 * * * *" # Exécution toutes les 3 minutes
   jobTemplate:
     spec:
       template:
@@ -15,3 +15,8 @@ spec:
               image: loriclannister/phototheque-auto-refresh:latest
               imagePullPolicy: Always
           restartPolicy: OnFailure
+
+# Vérifier le fonctionnement
+# kubectl get cronjob
+# kubectl get jobs
+# kubectl logs job/<nom-du-job>
