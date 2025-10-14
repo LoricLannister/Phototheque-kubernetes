@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: phototheque-auto-refresh
+  namespace: default
+spec:
+  schedule: "*/3 * * * *" # Exécution toutes les 3 minutes
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: phototheque-admin-sa
+          containers:
+            - name: auto-refresh
+              image: loriclannister/phototheque-auto-refresh:latest
+              imagePullPolicy: Always
+          restartPolicy: OnFailure

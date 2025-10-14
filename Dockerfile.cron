@@ -1,0 +1,17 @@
+FROM bitnami/kubectl:latest
+
+# Passer temporairement en root
+USER 0
+
+# Copier et donner les droits d’exécution
+COPY auto-refresh.sh /usr/local/bin/auto-refresh.sh
+RUN chmod +x /usr/local/bin/auto-refresh.sh
+
+# Revenir à l’utilisateur non-root par sécurité
+USER 1001
+
+ENTRYPOINT ["/usr/local/bin/auto-refresh.sh"]
+
+
+# docker build -t loriclannister/phototheque-auto-refresh:latest -f Dockerfile.cron .
+# docker push loriclannister/phototheque-auto-refresh:latest
