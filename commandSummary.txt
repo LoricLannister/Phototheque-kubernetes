@@ -1,0 +1,46 @@
+Résumé un peu des commandes dans l'ordre pour lancer notre application dans un environnement Kubernetes distribué.
+
+1- La base de donnée shardée
+On applique dans l'ordre d'abord les fichiers yml des repertoires /sharding/headlessServices et /toApply. Cela permet
+successivement de deployer des services headless et les statefulSet nécessaires pour faire fonctionner le sharding.
+Finalement on applique aussi le fichier yml du repertoire /job pour lancer un job Kubernetes qui se chargera de
+l'initialisation du serveur MongoDB ainsi que les shards 1,2 et 3
+
+2- L'application NodeJs
+On applique les 3 fichiers yaml du repertoire /replication/dev. Cela a pour effet de déployer notre application
+avec 3 réplicas pour augmenter sa disponibilité. On note également la création d'un volume persistant qui contiendra entre
+autres les images de notre app Js
+
+3- Nginx & varnish
+On a configuré un reverse proxy en créant d'abord une configmap avec le fichier de configuration nginx situé dans le repertoire
+/nginx/dev. Ensuite nous avons appliqué les fichiers yaml du même repertoire pour créer et déployer le service nginx.
+Concernant la couche de cache, nous avons appliqué les fichiers yaml du repertoire /varnish/dev pour avoir un déploiement répliqué
+de varnish
+
+4- Github actions et misa à jour automatique de l'image après pull
+Nous avons écrit des tests unitaires et des tests d'intégration respectivement dans /tests/unit et /test/integration. Lesdits tests
+sont automatiquement exécutés par github actions à chaque push selon les étapes de CI/CD définies dans ./github/workflow.
+Lorsque les tests réussissent, notre image est construite sur dockerHub et nous utilisons un CronJob situé à la racine du projet
+pour aller vérifier une éventuelle mise à jour sur Dockerhub toutes les 2 minutes et l'installer.
+
+5- Monitoring Grafana/Prometheus
+On se sert de deux requêtes PromQL pour surveiller graphiquement la consommation de RAM (en Mb) et de CPU (en %) de notre
+application NodeJs répliquée. On affiche alors les différentes données collectées dans un dashboard
+
+Requête PromQL étayant le pourcentage d'utilisation du CPU par nos 3 réplicas nodeJs
+
+ sum by (pod) (
+   rate(container_cpu_usage_seconds_total{
+     namespace="default",
+     pod=~"phototheque-web-deployment-84b747b846-(5z92h|blx2w|czfcg)"
+   }[5m])
+ ) * 100
+
+Requête PromQL étayant le pourcentage d'utilisation de la RAM par nos 3 réplicas
+
+ sum by (pod) (
+   container_memory_usage_bytes{
+     namespace="default",
+     pod=~"phototheque-web-deployment-84b747b846-(5z92h|blx2w|czfcg)"
+   }
+ )

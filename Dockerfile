@@ -49,3 +49,34 @@ CMD ["npm", "start"]
 
 # Supprimer les ressources allouées au namespace default
 # kubectl delete all --all -n default
+
+# Installation des composants de mornitoring dans un cmd en mode admin
+# helm repo add prometheus-community https://prometheus-community.github.io/helm-charts --debug
+# helm repo add grafana https://grafana.github.io/helm-charts --debug
+# helm repo update
+# helm uninstall prometheus -n monitoring
+# helm install prometheus prometheus-community/kube-prometheus-stack -n monitoring --create-namespace -f C:\Users\marce\Desktop\IT-works\photothequeNodeJs\prometheus-values.yml
+
+# kubectl rollout restart deployment phototheque-varnish
+# Lister les pods dans le namespace grafana
+# kubectl get pods -n monitoring
+# Exposer grafana localement sur le port 3000
+# kubectl port-forward svc/prometheus-grafana -n monitoring 3000:80
+
+# Requête PromQL étayant le pourcentage d'utilisation du CPU par nos 3 réplicas nodeJs
+
+# sum by (pod) (
+#   rate(container_cpu_usage_seconds_total{
+#     namespace="default",
+#     pod=~"phototheque-web-deployment-84b747b846-(5z92h|blx2w|czfcg)"
+#   }[5m])
+# ) * 100
+
+# Requête PromQL étayant le pourcentage d'utilisation de la RAM par nos 3 réplicas
+
+# sum by (pod) (
+#   container_memory_usage_bytes{
+#     namespace="default",
+#     pod=~"phototheque-web-deployment-84b747b846-(5z92h|blx2w|czfcg)"
+#   }
+# )
