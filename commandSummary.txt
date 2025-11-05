@@ -6,10 +6,17 @@ successivement de deployer des services headless et les statefulSet nécessaires
 Finalement on applique aussi le fichier yml du repertoire /job pour lancer un job Kubernetes qui se chargera de
 l'initialisation du serveur MongoDB ainsi que les shards 1,2 et 3
 
+D'abord dans ./sharding/headlessServices/ on applique tous les fichiers yml: kubectl apply -f 
+Ensuite dans ./sharding/toApply/ on applique tous les fichiers yml aussi.
+Finalement dans ./sharding/job/ on lance le job d'initialisation de la base de données et des shards avec la commande
+suivante: kubectl apply -f initializeJob.yml
+
 2- L'application NodeJs
 On applique les 3 fichiers yaml du repertoire /replication/dev. Cela a pour effet de déployer notre application
 avec 3 réplicas pour augmenter sa disponibilité. On note également la création d'un volume persistant qui contiendra entre
 autres les images de notre app Js
+
+Dans ./replication/dev/ on applique tous les fichiers: kubectl apply -f .
 
 3- Nginx & varnish
 On a configuré un reverse proxy en créant d'abord une configmap avec le fichier de configuration nginx situé dans le repertoire
@@ -17,11 +24,31 @@ On a configuré un reverse proxy en créant d'abord une configmap avec le fichie
 Concernant la couche de cache, nous avons appliqué les fichiers yaml du repertoire /varnish/dev pour avoir un déploiement répliqué
 de varnish
 
-4- Github actions et misa à jour automatique de l'image après pull
+Commandes pour cette étape a effectuer dans ./nginx/dev:
+- Créer un ConfigMap phototheque-nginx-config que le Deployment va utiliser.
+kubectl create configmap phototheque-nginx-config --from-file=nginx.conf=nginx/dev/nginx.conf
+- Les applys
+kubectl apply -f nginx/deployment.yaml
+kubectl apply -f nginx/service.yaml
+- Vérifier que la config a été correctement crée
+kubectl get configmaps
+kubectl describe configmap phototheque-nginx-config
+
+Commandes pour cette étape a effectuer dans ./varnish/dev:
+- On apply les fichiers yaml du dossier varnish
+kubectl apply -f varnish/configmap.yaml
+kubectl apply -f varnish/deployment.yaml
+kubectl apply -f varnish/service.yaml
+
+4- Github actions et mis à jour automatique de l'image après pull
 Nous avons écrit des tests unitaires et des tests d'intégration respectivement dans /tests/unit et /test/integration. Lesdits tests
 sont automatiquement exécutés par github actions à chaque push selon les étapes de CI/CD définies dans ./github/workflow.
 Lorsque les tests réussissent, notre image est construite sur dockerHub et nous utilisons un CronJob situé à la racine du projet
 pour aller vérifier une éventuelle mise à jour sur Dockerhub toutes les 2 minutes et l'installer.
+Pour lancer le cronJob depuis la racine du projet, on fait: kubectl apply -f cronjob-auto-refresh.yml
+
+A noter que différents secrets utilisés par notre application ont dus être crées depuis dockerHub pour permettre notamment
+le login à dockerHub pour pousser l'image avec le tag "latest" à chaque fois
 
 5- Monitoring Grafana/Prometheus
 On se sert de deux requêtes PromQL pour surveiller graphiquement la consommation de RAM (en Mb) et de CPU (en %) de notre
