@@ -4,7 +4,7 @@ metadata:
   name: phototheque-auto-refresh
   namespace: default
 spec:
-  schedule: "*/2 * * * *" # Exécution toutes les 2 minutes
+  schedule: "*/1 * * * *" # Exécution toutes les 1 minutes
   jobTemplate:
     spec:
       template:
